@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #chatContainer {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 50px;
+        }
+
+        #userInput {
+            width: 70%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+
+        #sendButton {
+            padding: 8px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #voiceButton {
+            padding: 8px;
+            background-color: #4285F4;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        #chatHistory {
+            margin-top: 20px;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .userMessage {
+            background-color: #e6f7ff;
+        }
+
+        .botMessage {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<div id="chatContainer">
+    <h1>Simple Chatbot</h1>
+    <div>
+        <label for="userInput">User: </label>
+        <input type="text" id="userInput" name="userInput">
+        <button id="sendButton" onclick="sendMessage()">Send</button>
+        <button id="voiceButton" onclick="startVoiceRecognition()">Voice</button>
+    </div>
+    <div id="chatHistory"></div>
+</div>
+
+<script>
+    function sendMessage() {
+        var userInput = document.getElementById("userInput").value;
+        document.getElementById("userInput").value = "";
+        fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: userInput })
+        })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("chatHistory").innerHTML +=
+                    `<div class="message userMessage"><strong>User:</strong> ${userInput}</div>` +
+                    `<div class="message botMessage"><strong>Bot:</strong> ${data}</div>`;
+            });
+    }
+
+    function startVoiceRecognition() {
+        var recognition = new webkitSpeechRecognition() || SpeechRecognition();
+        recognition.lang = 'en-US';
+
+        recognition.onresult = function (event) {
+            var voiceInput = event.results[0][0].transcript;
+            document.getElementById("userInput").value = voiceInput;
+            sendMessage();
+        };
+
+        recognition.start();
+    }
+</script>
+</body>
+</html>
