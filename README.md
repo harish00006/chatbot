@@ -26,11 +26,6 @@ To run the chatbot application locally, follow these steps:
 
 cd chatbot-application
 
---Run the Spring Boot application:
-
-./mvnw spring-boot:run
---Open your web browser and go to http://localhost:8080 to interact with the chatbot.
-
 --Usage
 * Enter a message in the input field and click "Send" to send a text message to the chatbot.
 * Click the "Voice" button to use voice recognition for input.
